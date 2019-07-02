@@ -1,6 +1,10 @@
 import Frog from "./Frog";
 import Car from "./Car";
 import FloatingObject from "./FloatingObject";
+import StaticObject from "./StaticObject";
+import SkullSymbol from "./SkullSymbol";
+
+
 
 // const Truck = require("./Truck");
 // const Turtle = require("./Turtle");
@@ -10,11 +14,14 @@ import Util from "./util";
 
 class Game {
   constructor() {
-    this.cars = [];
     this.sounds = {};
+
+    this.cars = [];
     this.floatingObjects = [];
+    this.staticObjects = [];
     this.frogs = [];
     this.frogLives = 3;
+    this.furthestYPos = Game.DIM_Y; 
     this.width = Game.DIM_X;
     this.height = Game.DIM_Y;
     this.midPointY = Game.MID_POINT_Y;
@@ -25,20 +32,29 @@ class Game {
     this.messages = null;
     this.score = 0;
     //this.addAsteroids();
-    window.addEventListener("focus", () => this.resetObjects());
-    window.addEventListener("blur", () => this.freezeAnimation());
+    //window.addEventListener("focus", () => this.onFocus());
+    window.addEventListener("blur", () => this.onBlur());
   }
 
   freezeAnimation() {
     cancelAnimationFrame(this.gameView.animationId);
   }
-  resetObjects (){
-    console.log("resetObjects");
+
+  onBlur() {
+    console.log("blurred");
+    cancelAnimationFrame(this.gameView.animationId);
+  }
+
+  onFocus() {
+    console.log("focused");
+    this.resetObjects();
+  }
+  resetObjects(){
     this.cars = [];
     this.floatingObjects = [];
     this.addCars();
     this.addFloatingObjects();
-    this.gameView.start();
+  
   }
 
   add(object) {
@@ -49,6 +65,8 @@ class Game {
     
     } else if (object instanceof FloatingObject) {
       this.floatingObjects.push(object);
+    } else if (object instanceof StaticObject) {
+      this.staticObjects.push(object);
     } 
     
   }
@@ -66,6 +84,44 @@ class Game {
       offsetX += 110;
     }
     return homeBaseGoals;
+  }
+
+  calculatePoints(eventType) {
+    switch(eventType) {
+      case Game.MOVE_UP:
+        if(this.frogs[0].y < this.furthestYPos) {
+          this.score += 10;
+          this.furthestYPos = this.frogs[0].y;
+          console.log(this.score);
+        }
+        break;
+      case Game.SCORE_GOAL:
+        this.score += 50;
+        break;
+      case Game.LEVEL_COMPLETE:
+        this.score += 1000;
+        break;
+    }
+  }
+
+  titleScreen(ctx) {
+    // paint top half blue
+    ctx.fillStyle = "#09528f";
+    ctx.fillRect(0,0, Game.DIM_X, (Game.DIM_Y / 2));
+
+    // paint bottom half black
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, Game.DIM_Y / 2, Game.DIM_X, Game.DIM_Y);
+
+    // write "FROG QUEST" in green on screen
+    ctx.fillStyle = "#3bd627";
+    ctx.font = 52 + "pt Arial ";
+    ctx.textAlign = "center";
+    ctx.fillText("FROG QUEST", Game.DIM_X / 2, Game.GRID * 3);
+
+    //menu options
+    ctx.font = 25 + "pt Arial ";
+    ctx.fillText("PLAY GAME", Game.DIM_X / 2, Game.GRID * 6);
   }
 
   drawBackground(ctx) {
@@ -138,6 +194,8 @@ class Game {
     // draw a frog icon for each goal if scored
     let img = new Image();
     img.src = "./images/frog.png";
+
+    
     this.goalsScored.forEach( goal => {
       ctx.drawImage(img, goal.left + 5, 30);
     });
@@ -208,7 +266,9 @@ class Game {
   }
 
   addFloatingObjectRow(vel, dist, posi, type, numObjects, width = null) {
-
+    if(type === "turtles-3") {
+      console.log(`posi: ${posi}, width: ${width}`);
+    }
     // start first object in row off-screen to the left
     let rowWidth = (width * numObjects) + (dist * numObjects);
     let firstOffsetX = (Game.HIDDEN_DIM_X - rowWidth) / 2;
@@ -247,11 +307,13 @@ class Game {
 
   } 
   allObjects() {
-    return [].concat(this.cars, this.floatingObjects, this.frogs);
+    return [].concat(this.cars, this.floatingObjects,this.staticObjects, this.frogs);
   }
 
   checkCollisions() {
     const frog = this.frogs[0];
+    // console.log(frog.pos);
+    // console.log(frog.isHit);
     if(!frog) return;
     let allObjects = this.allObjects();
     let obj = null;
@@ -268,8 +330,10 @@ class Game {
               isOnFloatingObj = true;
               return true;
             } else if(obj instanceof Car) {
+              console.log("collision detected");
               this.frogLives -= 1;
-              frog.relocateToStart();
+              if(!this.isGameOver()) this.frogLosesLife(frog);
+              //frog.relocateToStart();
             }
             
           }
@@ -281,11 +345,29 @@ class Game {
       
       if(frog.stopPos) return;
       this.frogLives -= 1;
-      frog.relocateToStart();
+      this.frogLosesLife(frog);
     }
     if(this.isGameOver()) this.gameOver();
   }
 
+  frogLosesLife(frog) {
+    console.log(this.frogLives);
+    console.log(frog.pos);
+    frog.isHit = true;
+    frog.isInWater() ? this.sounds.splash.play() : this.sounds.loseLife.play();
+    
+    let skull = new SkullSymbol({
+      pos: [frog.x, frog.y],
+      game: this
+    });
+    frog.relocateToStart();
+    this.add(skull);
+  
+    setTimeout(() => {
+      this.remove(skull);
+      frog.isHit = false;
+    }, 2000);
+  }
   checkGoals() {
     if(!this.frogs[0]) return;
     let frog = this.frogs[0];
@@ -300,9 +382,13 @@ class Game {
           return;
         }
         this.addGoal(frog.lastGoal);
+        this.sounds.scoreGoal.play();
+        setTimeout(() => this.sounds.levelUpMusic.play(), 450);
         if(this.goalsScored.length === 5) {
           this.messages = "LEVEL UP!";
+          this.calculatePoints(Game.LEVEL_COMPLETE);
           frog.relocateOffscreen();
+          setTimeout(() => this.sounds.levelUpMusic.play, 250);
           
           setTimeout( () => {
             this.goalsScored = [];
@@ -311,12 +397,14 @@ class Game {
           }, 2000);
 
         } else {
+          this.calculatePoints(Game.SCORE_GOAL);
           frog.relocateToStart();
         }
         
         
       } else {
         this.frogLives -= 1;
+        this.frogLosesLife(frog);
         frog.relocateToStart();
       }
     }
@@ -365,7 +453,6 @@ class Game {
   gameOver() {
     let frog = this.frogs[0];
     this.remove(frog);
-    debugger
     this.messages = "GAME OVER";
     setTimeout(() => {
       this.messages = null;
@@ -374,24 +461,55 @@ class Game {
   }
 
   loadSounds() {
-    // frog jumps sound
-    this.addSounds("jump", "./sounds/jump.mp3");
+    // Music
+    // begin game
+    this.addSound("beginGameMusic", "./sounds/begin_game_music.mp3");
+    // level up
+    this.addSound("levelUpMusic", "./sounds/level_up_music.mp3");
+
+    //Sound Effects
+    // frog jumps 
+    this.addSound("jump", "./sounds/jump.mp3");
+    // loses life
+    this.addSound("loseLife", "./sounds/lose_life.mp3");
+    // splash
+    this.addSound("splash", "./sounds/splash.mp3");
+    // score goal
+    this.addSound("scoreGoal", "./sounds/score_goal.mp3");
+
+    
   }
 
-  addSounds(name, sourceUrl) {
+  
+  addSound(name, sourceUrl) {
     let sound = document.createElement("audio");
+    let that = this;
     sound.src = sourceUrl;
-
+    
     sound.setAttribute("preload", "auto");
     sound.setAttribute("controls", "none");
     sound.style.display = "none";
-    //document.appendChild(sound);
-
+    
     //add sound to our list of sounds
     this.sounds[name] = sound;
     //debugger
   }
 
+  // loadOpeningTheme() {
+  //   // begin game
+  //   this.addSound("beginGameMusic", "./sounds/begin_game_music.mp3");
+
+  //   while(true) {
+  //     if(this.sounds.beginGameMusic.readyState === 4) return new Promise(
+  //       resolve => { return true; }
+  //     );
+  //   }
+  //   return new Promise(resolve => {});
+  // }
+
+  //  playOpeningTheme() {
+  //   this.loadOpeningTheme.then(resolve => {this.sounds.beginGameMusic.play();});
+  // }
   moveObjects(delta, direction) {
     this.allObjects().forEach((object) => {
      object.move(delta);      
@@ -408,8 +526,8 @@ class Game {
   remove(object) {
     if (object instanceof Frog) {
       this.frogs.splice(this.frogs.indexOf(object), 1);
-    } else if (object instanceof Asteroid) {
-      this.asteroids.splice(this.asteroids.indexOf(object), 1);
+    } else if (object instanceof SkullSymbol) {
+      this.staticObjects.splice(this.staticObjects.indexOf(object), 1);
     } else {
       throw new Error("unknown type of object");
     }
@@ -460,4 +578,8 @@ Game.LONG_LOG_WIDTH = Game.GRID * 6;
 Game.TWO_TURTLE_PACK_WIDTH = Game.GRID * 2;
 Game.THREE_TURTLE_PACK_WIDTH = Game.GRID * 3;
 
+// point system
+Game.MOVE_UP = "up";
+Game.SCORE_GOAL = "SCORE_GOAL";
+Game.LEVEL_COMPLETE = "LEVEL_COMPLETE";
 export default Game;

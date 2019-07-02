@@ -5,6 +5,19 @@ class GameView {
     this.game = game;
     this.game.gameView = this;
     this.frog = this.game.addFrog();
+    this.counter = 0;
+    this.animationId = null;
+    this.blurred = false;
+    this.startTime = 0;
+    this.animate = this.animate.bind(this);
+    this.isReFocused = false;
+
+    //window.addEventListener("focus", () => this.onFocus());
+  }
+
+  onFocus() {
+    this.isReFocused = true;
+    console.log("refocused");
   }
 
   bindKeyHandlers() {
@@ -14,29 +27,42 @@ class GameView {
      let direction = GameView.MOVES[k];
       key(k, () => { frog.moveFrog(direction); });
     });
+    
+  }
 
+  titleScreen() {
+    this.game.titleScreen(this.ctx);
+    key("enter", () => { this.start(); });
+    this.game.loadSounds();
   }
 
   start() {
-    
+    setTimeout(() => this.game.sounds.beginGameMusic.play(), 150);
     this.bindKeyHandlers();
     this.lastTime = 0;
     this.game.addCars();
     this.game.addFloatingObjects();
-    this.game.loadSounds();
+    
     // start the animation
-    this.animationId = requestAnimationFrame(this.animate.bind(this));
+    this.animationId = requestAnimationFrame(time => {
+      this.startTime = time;
+      this.animate(time);
+    });
   }
 
 
   animate(time) {
-    const timeDelta = time - this.lastTime;
-    this.game.step(timeDelta);
-    this.game.draw(this.ctx);
-    this.lastTime = time;
+   
+    const timeDelta = time - this.startTime;
+    if(timeDelta < 1000) {
+      this.game.step(timeDelta);
+      this.game.draw(this.ctx);
+    }
+    this.startTime = time;
+    this.counter += 0.02;
 
     // every call to animate requests causes another call to animate
-    requestAnimationFrame(this.animate.bind(this));
+    requestAnimationFrame(this.animate);
   }
 
 }

@@ -98,11 +98,17 @@ class MovingObject {
 
   draw(ctx) {
     if(this instanceof Frog) {
-      ctx.fillStyle = "green";
       let img = new Image();
-      img.src = this.image1;
-      if(this.stopPos) {img = this.getAnimationFrame();
+      if(this.isHit) {
+        img.src = '';
+      } else {
+        img.src = this.image1;
+        if (this.stopPos) {
+          img = this.getAnimationFrame();
+        }
       }
+      
+      
       // get center point coords for current grid square
       let centerPoint = [this.pos[0] + 0.5 * this.width, this.pos[1] + 0.5 * this.height];
       
@@ -242,7 +248,7 @@ class MovingObject {
     return this.animationFrames[frame];
   }
   move(timeDelta) {
-
+    if(this.isHit) return;
     // stop object from moving if it has reached it's destination
     if(this.stopPos) {
       let stopped = false;
@@ -268,7 +274,7 @@ class MovingObject {
       this.pos = this.stopPos;
       this.stopPos = null;
       this.startPos = null;
-      //this.moveDir = null;
+      this.game.calculatePoints(this.moveDir);
       }
     }
       

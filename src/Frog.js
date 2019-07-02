@@ -1,5 +1,6 @@
 import MovingObject from "./MovingObject";
 import Car from "./Car";
+import Game from "./Game";
 import FloatingObject from './FloatingObject';
 import Util from "./util";
 import { Z_BEST_COMPRESSION } from "zlib";
@@ -37,6 +38,7 @@ class Frog extends MovingObject {
     this.lastGoal = false;
     this.startPos = null;
     this.stopPos = null;
+    this.isHit = false;
   }
 
   didLandInHomeBase() {
@@ -129,10 +131,15 @@ class Frog extends MovingObject {
   relocateToStart() {
     if(this.game.frogLives === 0) return;
 
-    let startX = (this.game.width / 2) - (Frog.WIDTH / 2);
+    this.game.furthestYPos = Game.DIM_Y;
+    let startX = Game.GRID * 7;
+    // let startX = (this.game.width / 2) - (Frog.WIDTH / 2);
     let startY = this.game.height - (Frog.HEIGHT + ((this.game.grid - Frog.HEIGHT) / 2));
     this.pos = [startX, startY];
+    this.x = this.pos[0];
+    this.y = this.pos[1]; 
     this.vel = [0,0];
+    this.moveDir = "up";
   }
   relocateOffscreen() {
     this.pos = [300, this.game.height + 100];
