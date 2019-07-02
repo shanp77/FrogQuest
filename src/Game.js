@@ -120,8 +120,17 @@ class Game {
     ctx.fillText("FROG QUEST", Game.DIM_X / 2, Game.GRID * 3);
 
     //menu options
-    ctx.font = 25 + "pt Arial ";
-    ctx.fillText("PLAY GAME", Game.DIM_X / 2, Game.GRID * 6);
+    ctx.fillStyle = "white";
+    ctx.font = 17 + "pt Arial ";
+    ctx.fillText("PRESS ENTER TO PLAY", Game.DIM_X / 2, Game.GRID * 6);
+
+    // credits
+    ctx.font = 12 + "pt Arial ";
+    ctx.textAlign = "left";
+    ctx.fillText("May 2019", Game.GRID * 1, Game.DIM_Y - Game.GRID / 2);
+
+    ctx.textAlign = "right";
+    ctx.fillText("Created by Shannon Piesinger", Game.DIM_X - Game.GRID, Game.DIM_Y - Game.GRID / 2);
   }
 
   drawBackground(ctx) {
@@ -332,7 +341,7 @@ class Game {
             } else if(obj instanceof Car) {
               console.log("collision detected");
               this.frogLives -= 1;
-              if(!this.isGameOver()) this.frogLosesLife(frog);
+              this.frogLosesLife(frog);
               //frog.relocateToStart();
             }
             
@@ -347,7 +356,6 @@ class Game {
       this.frogLives -= 1;
       this.frogLosesLife(frog);
     }
-    if(this.isGameOver()) this.gameOver();
   }
 
   frogLosesLife(frog) {
@@ -362,11 +370,17 @@ class Game {
     });
     frog.relocateToStart();
     this.add(skull);
-  
-    setTimeout(() => {
-      this.remove(skull);
-      frog.isHit = false;
-    }, 2000);
+    if(this.isGameOver()) {
+      this.gameOver();
+      setTimeout(() => {
+        this.remove(skull);
+      }, 2000);
+    } else {
+      setTimeout(() => {
+        this.remove(skull);
+        frog.isHit = false;
+      }, 2000);
+    }
   }
   checkGoals() {
     if(!this.frogs[0]) return;
@@ -420,8 +434,13 @@ class Game {
     ctx.fillText(this.messages, Game.DIM_X / 2, Game.MID_POINT_Y);
   }
 
+  drawScore() {
+    let score = document.getElementById("score");
+    score.innerHTML = this.score;
+  }
   isGameOver() {
-    return this.frogLives === 0;
+    
+    return this.frogLives <= 0;
   }
 
   
@@ -438,6 +457,9 @@ class Game {
 
     // draw messgages
     this.drawMessages(ctx);
+
+    //draw score
+    this.drawScore();
   }
 
   isOutOfBounds(pos, width) {

@@ -25,7 +25,7 @@ class StaticObject {
   }
 
   draw(ctx) {
-        if(this.game.frogs[0].stopPos) {
+    if (this.game.frogs[0] && this.game.frogs[0].stopPos) {
           this.pos[0] = this.game.frogs[0].stopPos[0];
           this.pos[1] = this.game.frogs[0].stopPos[1];
           this.game.frogs[0].stopPos = null;

@@ -1,4 +1,36 @@
 @font-face {
   font-family: 'Atarian';
-  src: url('fonts/Atarian');
+  src: url('./fonts/Atarian.tff');
 }
+
+html {
+
+}
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-image: linear-gradient(to bottom right, #09528f, black)
+}
+
+.canvas{
+  height: 560px;
+  width: 520px;
+}
+
+.scoreboard{
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  display: flex;
+    align-items: flex-start;
+    width: 520px;
+    color: green;
+    font-weight: 700;
+}
+

@@ -54,7 +54,8 @@ class Frog extends MovingObject {
 
   moveFrog(direction) {
     if(this.willBeOutOfBounds(direction)) return;
-
+    if(this.game.isGameOver() || this.isHit === true) return;
+    
     switch(direction) {
       case "LEFT":
         this.stopPos = [this.pos[0] - this.game.grid, this.pos[1]];
