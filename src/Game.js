@@ -383,12 +383,12 @@ class Game {
         }
         this.addGoal(frog.lastGoal);
         this.sounds.scoreGoal.play();
-        setTimeout(() => this.sounds.levelUpMusic.play(), 450);
+        
         if(this.goalsScored.length === 5) {
           this.messages = "LEVEL UP!";
           this.calculatePoints(Game.LEVEL_COMPLETE);
           frog.relocateOffscreen();
-          setTimeout(() => this.sounds.levelUpMusic.play, 250);
+          setTimeout(() => this.sounds.levelUpMusic.play(), 450);
           
           setTimeout( () => {
             this.goalsScored = [];
