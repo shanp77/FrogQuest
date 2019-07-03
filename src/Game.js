@@ -117,7 +117,7 @@ class Game {
     ctx.fillStyle = "#3bd627";
     ctx.font = 52 + "pt Arial ";
     ctx.textAlign = "center";
-    ctx.fillText("FROG QUEST", Game.DIM_X / 2, Game.GRID * 3);
+    ctx.fillText("FROGGERY", Game.DIM_X / 2, Game.GRID * 3);
 
     //menu options
     ctx.fillStyle = "white";
