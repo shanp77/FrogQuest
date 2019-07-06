@@ -113,12 +113,12 @@ class Game {
 
     // write "FROG QUEST" in green on screen
     ctx.fillStyle = null;
-    let logo = "./images/frogger_logo.png";
+    let logo = "./images/frog_town_logo.png";
     let img = new Image();
     
     img.onload = () => {
-      let scaledWidth = img.width * 1.5;
-      let scaledHeight = img.height * 1.5;
+      let scaledWidth = img.width * 1;
+      let scaledHeight = img.height * 1;
       ctx.drawImage(img, Game.DIM_X / 2 - scaledWidth / 2,
       Game.GRID * 2, scaledWidth, scaledHeight);
     };
@@ -126,9 +126,7 @@ class Game {
     // ctx.fillStyle = "#3bd627";
     // ctx.font = "72px Atarian";
      ctx.textAlign = "center";
-    // let text = "FROGGERY";
-    // ctx.fillText(text, Game.DIM_X / 2, Game.GRID * 3);
-    //ctx.fontFamily = "Atarian";
+   
     
     
 
@@ -458,7 +456,7 @@ class Game {
     }  else {
       document.getElementById("lives").innerHTML = 0;
     }
-    
+
   }
 
   isGameOver() {
