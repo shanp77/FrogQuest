@@ -3,7 +3,7 @@
 
 <head>
   <title>Frog Quest</title>
-
+<link href="https://fonts.googleapis.com/css?family=Barriecito&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
 </head>
 
@@ -17,19 +17,26 @@
     Javascript. The objective is to safely navigate the frog back home, across the road and the river, while avoiding
     obstacles along the way. Use the arrow keys to move the frog.
     </p> 
-    <div class="personal-data">by Shannon Piesinger</div> 
-    <div class="personal-data">shannon.piesinger@gmail.com</div>
-    <br>
-    <div class="personal-data"><a href="https://www.linkedin.com/in/shannon-piesinger/">LinkedIn</a></div>
-    <br>
-    <div class="personal-data"><a href="https://github.com/shanp77/FrogQuest">Github</a></div>
-    
+    <div class="container-data">
+      <div class="personal-data">by Shannon Piesinger</div> 
+      <div class="personal-data">shannon.piesinger@gmail.com</div>
+      <br><br>
+      <div class="personal-data"><a href="https://www.linkedin.com/in/shannon-piesinger/">LinkedIn</a></div>
+      <br><br>
+      <div class="personal-data"><a href="https://github.com/shanp77/FrogQuest">Github</a></div>
+    </div>
    </div>
 
    <div class="main-section">
     <div class="scoreboard">
-      <div class="score-display">SCORE &nbsp;</div>
-      <div id="score">0</div>
+      <div class="left">
+        <div class="score-display">SCORE &nbsp;</div>
+        <div id="score">0</div>
+      </div>
+      <div class="right">
+        <div class="lives-display">LIVES &nbsp;</div>
+        <div id="lives">3</div>
+      </div>
     </div>
     <canvas class="canvas"></canvas>
   </div>

@@ -1,6 +1,11 @@
 @font-face {
   font-family: 'Atarian';
-  src: url('./fonts/Atarian.tff');
+  src: url('./fonts/Atarian.ttf');
+}
+
+@font-face {
+  font-family: 'Barriecito';
+  src: url('https://fonts.googleapis.com/css?family=Barriecito&display=swap');
 }
 
 html {
@@ -28,12 +33,19 @@ body {
 .scoreboard{
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   display: flex;
-    align-items: flex-start;
-    width: 520px;
-    color: green;
-    font-weight: 700;
+  width: 100%;
+  color: green;
+  font-weight: 700;
+  justify-content: space-between;
 }
+.left{
+  display: flex;
 
+}
+.right{
+  display: flex;
+  
+}
 .left-section{
   display: flex;
     flex-direction: column;
@@ -49,6 +61,13 @@ body {
 }
 p {
   margin-left: 20px;
+  font-family: Atarian;
+  font-size: 20px;
+}
+.container-data{
+  display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .personal-data{
   font-size: 15px;

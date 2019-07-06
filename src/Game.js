@@ -4,8 +4,6 @@ import FloatingObject from "./FloatingObject";
 import StaticObject from "./StaticObject";
 import SkullSymbol from "./SkullSymbol";
 
-
-
 // const Truck = require("./Truck");
 // const Turtle = require("./Turtle");
 // const Log = require("./Log");
@@ -13,7 +11,7 @@ import Util from "./util";
 
 
 class Game {
-  constructor() {
+  constructor(ctx) {
     this.sounds = {};
 
     this.cars = [];
@@ -114,10 +112,25 @@ class Game {
     ctx.fillRect(0, Game.DIM_Y / 2, Game.DIM_X, Game.DIM_Y);
 
     // write "FROG QUEST" in green on screen
-    ctx.fillStyle = "#3bd627";
-    ctx.font = 52 + "pt Arial ";
-    ctx.textAlign = "center";
-    ctx.fillText("FROGGERY", Game.DIM_X / 2, Game.GRID * 3);
+    ctx.fillStyle = null;
+    let logo = "./images/frogger_logo.png";
+    let img = new Image();
+    
+    img.onload = () => {
+      let scaledWidth = img.width * 1.5;
+      let scaledHeight = img.height * 1.5;
+      ctx.drawImage(img, Game.DIM_X / 2 - scaledWidth / 2,
+      Game.GRID * 2, scaledWidth, scaledHeight);
+    };
+    img.src = logo;
+    // ctx.fillStyle = "#3bd627";
+    // ctx.font = "72px Atarian";
+     ctx.textAlign = "center";
+    // let text = "FROGGERY";
+    // ctx.fillText(text, Game.DIM_X / 2, Game.GRID * 3);
+    //ctx.fontFamily = "Atarian";
+    
+    
 
     //menu options
     ctx.fillStyle = "white";
@@ -340,7 +353,6 @@ class Game {
               return true;
             } else if(obj instanceof Car) {
               console.log("collision detected");
-              this.frogLives -= 1;
               this.frogLosesLife(frog);
               //frog.relocateToStart();
             }
@@ -353,7 +365,6 @@ class Game {
     if(frog.isInWater()) {
       
       if(frog.stopPos) return;
-      this.frogLives -= 1;
       this.frogLosesLife(frog);
     }
   }
@@ -361,6 +372,7 @@ class Game {
   frogLosesLife(frog) {
     console.log(this.frogLives);
     console.log(frog.pos);
+    this.frogLives -= 1;
     frog.isHit = true;
     frog.isInWater() ? this.sounds.splash.play() : this.sounds.loseLife.play();
     
@@ -438,9 +450,20 @@ class Game {
     let score = document.getElementById("score");
     score.innerHTML = this.score;
   }
+
+  drawLives() {
+    
+    if(this.frogLives >= 0){
+      document.getElementById("lives").innerHTML = this.frogLives;
+    }  else {
+      document.getElementById("lives").innerHTML = 0;
+    }
+    
+  }
+
   isGameOver() {
     
-    return this.frogLives <= 0;
+    return this.frogLives < 0;
   }
 
   
@@ -460,6 +483,9 @@ class Game {
 
     //draw score
     this.drawScore();
+
+    // draw lives
+    this.drawLives();
   }
 
   isOutOfBounds(pos, width) {

@@ -6,6 +6,7 @@ class GameView {
     this.game.gameView = this;
     this.frog = this.game.addFrog();
     this.counter = 0;
+    this.animCounter = 0;
     this.animationId = null;
     this.blurred = false;
     this.startTime = 0;
@@ -13,11 +14,17 @@ class GameView {
     this.isReFocused = false;
 
     //window.addEventListener("focus", () => this.onFocus());
+    //window.addEventListener("blur", () => this.onBlur());
   }
 
   onFocus() {
     this.isReFocused = true;
     console.log("refocused");
+  }
+
+  onBlur() {
+    alert("blurred");
+    cancelAnimationFrame(this.gameView.animationId);
   }
 
   bindKeyHandlers() {
@@ -52,9 +59,9 @@ class GameView {
 
 
   animate(time) {
-   
+   console.log(++this.animCounter);
     const timeDelta = time - this.startTime;
-    if(timeDelta < 1000) {
+    if(timeDelta < 100) {
       this.game.step(timeDelta);
       this.game.draw(this.ctx);
     }

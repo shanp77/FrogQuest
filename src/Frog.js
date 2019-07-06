@@ -55,7 +55,7 @@ class Frog extends MovingObject {
   moveFrog(direction) {
     if(this.willBeOutOfBounds(direction)) return;
     if(this.game.isGameOver() || this.isHit === true) return;
-    
+
     switch(direction) {
       case "LEFT":
         this.stopPos = [this.pos[0] - this.game.grid, this.pos[1]];
@@ -130,7 +130,7 @@ class Frog extends MovingObject {
     }
   }
   relocateToStart() {
-    if(this.game.frogLives === 0) return;
+    if(this.game.frogLives < 0) return;
 
     this.game.furthestYPos = Game.DIM_Y;
     let startX = Game.GRID * 7;
