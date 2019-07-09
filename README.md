@@ -12,132 +12,99 @@ You can play a live version of the game [here](https://shanp77.github.io/FrogQue
 - HTML5 Canvas
 - Javascript
 
-## Features
+## Instructions
 
-Players 
-### Sign In/ Sign Up / Demo User
+The goal is to navigate the frog across the street and river, to one of the 5 "homes" at the top of the screen.  You must avoid being hit by the cars while crossing the street.  The frog hops onto the floating logs and turtles, hopping from floating object to object, finally landing in one of the 5 home spots.  You must avoid landing in the water.  Once a frog has successfully been placed in all 5 home spots, the level is complete.
 
-Users are able to sign in, sign up, or use the demo user account to browse the site.
+### Controls
 
-![alt text](./client/src/images/StreamWorksMain.png "StreamWorks")
+Move Left: left arrow
+Move Right: right arrow
+Move Up: up arrow
+Move Down: down arrow
 
-## Music Library
+## Technical Details and Highlights
 
-Users can add music to their library.
+Rendered in HTML5's Canvas 2D graphics rendering element. Javascript source code compiled with Webpack. The Animation loop is managed utilizing Canvas' requestAnimationFrame() recursive function, for delivering smooth animations at 60fps, waiting for the Browser to be available before rendering the animation frame.
 
-![alt text](./client/src/images/musiclibrary.png "StreamWorks Library")
+Frog movement animation frames are timed to be synchronized with the overall progression of the frog within it's movement.  As the frog's location changes, so does the frame.
 
-## Playlist
-
-Users can create a playlist
-
-![alt text](./client/src/images/playlist.png "StreamWorks Playlist")
-![alt text](./client/src/images/createplaylist.png "StreamWorks Create Playlist")
+To handle direction changes of the frog sprite, the canvas is rotated x degrees, starting at the center point of the sprite.  The sprite is drawn and then the canvas position is restored to its original position.
 
 ## Code Snippet
 
-#### AudioPlayer.js
+
+#### MovingObject.js
 
 ```
-import React, { Component } from "react";
-import "./AudioPlayer.css";
-import { Query } from "react-apollo";
-import AWSSoundPlayer from "./AWSSoundPlayer";
-import { IS_LOGGED_IN } from "../graphql/queries";
+draw(ctx) {
+    if(this instanceof Frog) {
+      let img = new Image();
+      if(this.isHit) {
+        img.src = '';
+      } else {
+        img.src = this.image1;
+        if (this.stopPos) {
+          img = this.getAnimationFrame();
+        }
+      }
+      
+      
+      // get center point coords for current grid square
+      let centerPoint = [this.pos[0] + 0.5 * this.width, this.pos[1] + 0.5 * this.height];
+      
+      ctx.save();
+      // change direction of the frog by rotating the canvas
+      ctx.translate(centerPoint[0], centerPoint[1]);
+      let degrees = this.rotationDegrees();
+      ctx.rotate(Math.PI/180 * degrees);
+      ctx.drawImage(img, -(0.5 * img.naturalWidth), -(0.5 * img.naturalHeight));
 
-import PlaceHolderPlayer from "./PlaceHolderPlayer";
 
-class AudioPlayer extends Component {
-  constructor(props) {
-    super(props);
-    this.nextTrack = this.nextTrack.bind(this);
-    this.prevTrack = this.prevTrack.bind(this);
-    this.togglePlay = this.togglePlay.bind(this);
-  }
+      // aftr drawing frog, rotate canvas back to original position
+      ctx.restore();
+      
+      return;
+    } else {
+      ctx.fillStyle = this.color;
+      if(this.image && this.type !== "turtles-2" && this.type !=="turtles-3") {
+        
+        ctx.drawImage(this.img, this.pos[0], this.pos[1]);
+      } else if (this.image && (this.type === "turtles-3" || this.type === "turtles-2")) {
+        
+          // ctx.drawImage(this.img, this.pos[0], this.pos[1]);
+          // ctx.drawImage(this.img, this.pos[0] + 40, this.pos[1]);
+        let frame = (Math.round(this.tick / 5)) % 7;
+        //this.y = this.calculateYStart(this.animationFrames[frame].height);
 
-  togglePlay() {
-    this.props.togglePlay();
-  }
-
-  nextTrack() {
-
-    let currentTrack = this.props.state.currentTrack;
-    currentTrack += 1;
-    this.props.selectTrack(currentTrack);
-  }
-
-  prevTrack() {
-    let currentTrack = this.props.state.currentTrack;
-    currentTrack -= 1;
-    if (currentTrack < 0) currentTrack = 0;
-    this.props.selectTrack(currentTrack);
-  }
-
-  render() {
-    let track;
-    if (this.props.state.playQueue.length > 0) {
-
-      track = this.props.state.playQueue[this.props.state.currentTrack];
+        ctx.drawImage(this.animationFrames[frame], this.pos[0], this.pos[1]);
+        ctx.drawImage(this.animationFrames[frame], this.pos[0] + 40, this.pos[1]);
+        
+        if (this.type === "turtles-3") ctx.drawImage(this.animationFrames[frame], this.pos[0] + 80, this.pos[1]);
+        this.tick += 1;
+        } else {
+        ctx.beginPath();
+        ctx.fillRect(this.pos[0],this.pos[1],this.width,this.height); 
+        ctx.fill();
+      }
     }
-
-    track = track || {
-      stream_url:
-        "https://s3.us-east-2.amazonaws.com/streamworks-songs/Respect+My+Art/Long+Live+the+King+1.m4a",
-      trackTitle: "Long Live the King",
-      artistName: "Organ Freeman",
-      albumArtUrl: "https://m.media-amazon.com/images/I/81mBzkImdvL._SS500_.jpg"
-    };
-    return (
-      <Query query={IS_LOGGED_IN}>
-        {({ data }) => {
-          if (data.isLoggedIn && this.props.state.currentTrack != null) {
-            return (
-              <div id="audio-player-bar">
-                <AWSSoundPlayer
-                  id="audio-player"
-                  streamUrl={track.stream_url}
-                  trackTitle={track.trackTitle}
-                  artistName={track.artistName}
-                  albumArtUrl={track.albumArtUrl}
-                  prevTrack={this.prevTrack}
-                  nextTrack={this.nextTrack}
-                  togglePlay={this.togglePlay}
-                  state={this.props.state}
-                  selectTrack={this.props.selectTrack}
-                  setCurrentTrack={this.props.setCurrentTrack}
-                />
-              </div>
-            );
-          } else {
-            return (
-              <div id="audio-player-bar">
-                <PlaceHolderPlayer loggedIn={data.isLoggedIn} />
-              </div>
-            );
-          }
-        }}
-      </Query>
-    );
   }
-}
 
-export default AudioPlayer;
+getAnimationFrame() {
+    let axis = null;
+    if(this.moveDir === "left" || this.moveDir === "right" ) {
+      axis = 0;
+    } else {
+      axis = 1;
+    }
+    let frameUnits = this.game.grid / this.animationFrames.length;
+    let progress = Math.abs(this.startPos[axis] - this.pos[axis]);
+  
+    let frame = Math.floor(progress / frameUnits) % this.animationFrames.length;
+    return this.animationFrames[frame];
+  }
 ```
 
-### Bonus
-
-- Filter by artist/song/album
-- Search bar
-- Add to playlist/library
-
-## Collaborators
-
-#### Trevor Steer
+## Creator
 
 #### Shannon Piesinger
-
-<<<<<<< HEAD
-#### Koy Saeteurn
-=======
-#### Koy Saeteurn
->>>>>>> 8690475b8f4012ecb3aced6e68330fd92b4d9449
