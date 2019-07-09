@@ -136,4 +136,8 @@ export default AudioPlayer;
 
 #### Shannon Piesinger
 
+<<<<<<< HEAD
 #### Koy Saeteurn
+=======
+#### Koy Saeteurn
+>>>>>>> 8690475b8f4012ecb3aced6e68330fd92b4d9449
