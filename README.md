@@ -4,7 +4,7 @@ Frog Town is an action game based on the 1981 arcade classic title Frogger.
 
 You can play a live version of the game [here](https://shanp77.github.io/FrogQuest/dist/index.html)
 
-![alt text](./client/src/images/streamworks.png "StreamWorks")
+![alt text](./dist/images/frogtown_screenshot.png "FrogTown")
 
 ## Technologies:
 
