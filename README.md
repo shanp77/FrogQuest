@@ -1,21 +1,20 @@
-# StreamWorks
+# FrogTown
 
-StreamWorks is a music streaming web app inspired by Spotify.
+Frog Town is an action game based on the 1981 arcade classic title Frogger.  
 
-Please visit the live site [here](http://streamworks.herokuapp.com/)
+You can play a live version of the game [here](https://shanp77.github.io/FrogQuest/dist/index.html)
 
 ![alt text](./client/src/images/streamworks.png "StreamWorks")
 
 ## Technologies:
 
-- JavaScript
-- React
-- GraphQL
-- MongoDB
-- Redux
+- HTML5
+- HTML5 Canvas
+- Javascript
 
-## Functionality
+## Features
 
+Players 
 ### Sign In/ Sign Up / Demo User
 
 Users are able to sign in, sign up, or use the demo user account to browse the site.
