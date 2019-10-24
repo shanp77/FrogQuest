@@ -39,7 +39,7 @@ class GameView {
 
   titleScreen() {
     this.game.titleScreen(this.ctx);
-    key("enter", () => { this.start(); });
+    key("enter", () => { if(!this.animationId) this.start(); });
     this.game.loadSounds();
   }
 

@@ -3,12 +3,7 @@ import Car from "./Car";
 import FloatingObject from "./FloatingObject";
 import StaticObject from "./StaticObject";
 import SkullSymbol from "./SkullSymbol";
-
-// const Truck = require("./Truck");
-// const Turtle = require("./Turtle");
-// const Log = require("./Log");
 import Util from "./util";
-
 
 class Game {
   constructor(ctx) {
@@ -528,7 +523,12 @@ class Game {
     let button = document.getElementById("mute-button");
     button.addEventListener("click", function (evt) {
       sounds.forEach(snd => {
+        //toggle audio on/off
         snd.muted = snd.muted ? false : true;
+
+        //toggle muted icon on/off
+        let icon = document.getElementById("mute-icon");
+        icon.src = snd.muted ? './images/muted_icon.png' : './images/muted_icon.png';
       });
 
     });
