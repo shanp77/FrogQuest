@@ -3,6 +3,7 @@
 
 <head>
   <title>Frog Quest</title>
+  <link rel='icon' href='favicon.ico' type='image/x-icon'/>
 <link href="https://fonts.googleapis.com/css?family=Barriecito&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
 </head>
@@ -12,35 +13,36 @@
  <script src="main.js"></script>
 
  <div class="container">
-   <div class="left-section">
-    <p>Froggery is a game based on the 1981 arcade classic Frogger. It was built in HTML's Canvas graphics environment in
-    Javascript. The objective is to safely navigate the frog back home, across the road and the river, while avoiding
-    obstacles along the way. Use the arrow keys to move the frog.
-    </p> 
-    <div class="container-data">
-      <div class="personal-data">by Shannon Piesinger</div> 
-      <div class="personal-data">shannon.piesinger@gmail.com</div>
-      <br><br>
-      <div class="personal-data"><a href="https://www.linkedin.com/in/shannon-piesinger/">LinkedIn</a></div>
-      <br><br>
-      <div class="personal-data"><a href="https://github.com/shanp77/FrogQuest">Github</a></div>
+   <div class="content">
+    <div class="left-section">
+      <div class="name">SHANNON PIESINGER</div>
+      <div class="email"><a href="mailto: shannon.piesinger@gmail.com">shannon.piesinger@gmail.com</a></div>
+      <p>Frog Town is based on the classic 1981 arcade game Frogger. I wrote it in JavaScript utilizing HTML5's Canvas graphics environment.
+         The objective is to safely navigate the frog across the road and the river, and safely land it in one of the 5 "homes" at the top of the screen. Along the way, avoid the road traffic and 
+      jump on the floating logs and turtles to get across the river. Use the arrow keys to move the frog. Enjoy!
+      </p> 
+      <div class="container-data">
+        
+        <!-- <div class="personal-data">shannon.piesinger@gmail.com</div> -->
+        <div class="personal-data"><a href="https://www.linkedin.com/in/shannon-piesinger/">LinkedIn</a></div>
+        <div class="personal-data"><a href="https://github.com/shanp77/FrogQuest">Github</a></div>
+      </div>
     </div>
-   </div>
 
-   <div class="main-section">
-    <div class="scoreboard">
-      <div class="left">
-        <div class="score-display">SCORE &nbsp;</div>
-        <div id="score">0</div>
+    <div class="main-section">
+      <div class="scoreboard">
+        <div class="left">
+          <div class="score-display">SCORE &nbsp;</div>
+          <div id="score">0</div>
+        </div>
+        <div class="right">
+          <div class="lives-display">LIVES &nbsp;</div>
+          <div id="lives">3</div>
+        </div>
       </div>
-      <div class="right">
-        <div class="lives-display">LIVES &nbsp;</div>
-        <div id="lives">3</div>
-      </div>
+      <canvas class="canvas"></canvas>
     </div>
-    <canvas class="canvas"></canvas>
   </div>
-  
  </div>
  
 </body>
