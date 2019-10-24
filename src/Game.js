@@ -521,7 +521,7 @@ class Game {
     //add event listener for mute button to toggle sound on/off
     let sounds = Object.values(this.sounds);
     let button = document.getElementById("mute-button");
-    button.addEventListener("click", function (evt) {
+    button.addEventListener("mouseup", function (evt) {
       sounds.forEach(snd => {
         //toggle audio on/off
         snd.muted = snd.muted ? false : true;
