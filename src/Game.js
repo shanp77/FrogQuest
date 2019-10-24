@@ -522,8 +522,16 @@ class Game {
     this.addSound("splash", "./sounds/splash.mp3");
     // score goal
     this.addSound("scoreGoal", "./sounds/score_goal.mp3");
-
     
+    //add event listener for mute button to toggle sound on/off
+    let sounds = Object.values(this.sounds);
+    let button = document.getElementById("mute-button");
+    button.addEventListener("click", function (evt) {
+      sounds.forEach(snd => {
+        snd.muted = snd.muted ? false : true;
+      });
+
+    });
   }
 
   

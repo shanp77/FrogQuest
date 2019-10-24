@@ -59,7 +59,7 @@ class GameView {
 
 
   animate(time) {
-   console.log(++this.animCounter);
+   //console.log(++this.animCounter);
     const timeDelta = time - this.startTime;
     if(timeDelta < 100) {
       this.game.step(timeDelta);

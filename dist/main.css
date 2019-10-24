@@ -100,10 +100,6 @@ text-decoration: none;
   font-weight: 600;
 }
 
-.personal-data a:hover{
-  
-}
-
 .main-section{
   display: flex;
   flex-direction: column;
@@ -113,3 +109,13 @@ text-decoration: none;
 
 }
 
+#mute-button{
+  width: fit-content;
+  height: fit-content;
+  border: none;
+  margin-top: 18px;
+}
+#mute-icon{
+  width: 25px;
+  height: 25px;
+}
