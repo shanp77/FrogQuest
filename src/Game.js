@@ -526,9 +526,9 @@ class Game {
         //toggle audio on/off
         snd.muted = snd.muted ? false : true;
 
-        //toggle muted icon on/off
+        //toggle muted icon 
         let icon = document.getElementById("mute-icon");
-        icon.src = snd.muted ? './images/muted_icon.png' : './images/muted_icon.png';
+        icon.src = snd.muted ? './images/muted_icon.png' : './images/unmuted_icon.png';
       });
 
     });
